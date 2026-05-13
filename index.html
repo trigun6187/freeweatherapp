@@ -77,29 +77,26 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: 40px;
       height: 40px;
+      padding: 0 0.65rem;
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 10px;
       background: rgba(255,255,255,0.1);
       color: #fff;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 500;
+      white-space: nowrap;
       cursor: pointer;
       transition: background 0.2s;
     }
     .geo-btn:hover { background: rgba(255,255,255,0.15); }
-    .geo-btn.loading { pointer-events: none; }
-    .geo-btn.loading .geo-icon {
-      animation: geo-spin 0.7s linear infinite;
-    }
+    .geo-btn.loading { pointer-events: none; opacity: 0.5; }
     .geo-btn.success {
       border-color: rgba(76, 175, 80, 0.5);
       box-shadow: 0 0 14px rgba(76, 175, 80, 0.35);
       transition: border-color 0s, box-shadow 0s;
     }
-    @keyframes geo-spin {
-      to { transform: rotate(360deg); }
-    }
-    .geo-icon { width: 18px; height: 18px; opacity: 0.85; }
     input[type=text] {
       flex: 1;
       padding: 0 0.85rem;
@@ -262,7 +259,7 @@
       .input-group { gap: 0.35rem; }
       #get-weather-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
       input[type=text] { height: 44px; padding: 0 0.7rem; min-width: 0; }
-      .geo-btn { width: 44px; height: 44px; }
+      .geo-btn { height: 44px; padding: 0 0.5rem; font-size: 0.72rem; }
       .hero {
         display: flex;
         flex-direction: column;
@@ -292,9 +289,7 @@
       </button>
     </div>
     <div class="input-group">
-    <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-    </button>
+    <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">Use my location</button>
     <input type="text" id="city-input" placeholder="City name or ZIP code…">
     <button id="get-weather-btn">Search</button>
   </div>
@@ -512,16 +507,13 @@
   }
 
   // Geolocation detection
-  // ---- icons for geo button ----
-  const navSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
-  const checkSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon"><polyline points="20 6 9 17 4 12"/></svg>';
-
   async function detectLocation() {
     if (!navigator.geolocation) return;
     const btn = document.getElementById('geo-btn');
-    const icon = btn.querySelector('.geo-icon');
+    const origText = btn.textContent;
     btn.classList.add('loading');
     btn.classList.remove('success');
+    btn.textContent = 'Locating…';
     try {
       const pos = await new Promise((res, rej) =>
         navigator.geolocation.getCurrentPosition(res, rej, {
@@ -533,14 +525,14 @@
       await getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
       btn.classList.remove('loading');
       btn.classList.add('success');
-      icon.outerHTML = checkSvg;
+      btn.textContent = '✓ Located';
       setTimeout(() => {
         btn.classList.remove('success');
-        const cur = btn.querySelector('.geo-icon');
-        if (cur) cur.outerHTML = navSvg;
+        btn.textContent = origText;
       }, 1200);
     } catch (_) {
       btn.classList.remove('loading');
+      btn.textContent = origText;
     }
   }
 
