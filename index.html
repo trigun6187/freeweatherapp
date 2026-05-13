@@ -37,66 +37,46 @@
     }
     .top-row {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       margin-bottom: 0.75rem;
     }
     .top-row .logo {
       font-size: clamp(1.5rem, 1.1rem + 2vw, 2.5rem);
       line-height: 1;
-      padding-top: 0.2rem;
-    }
-    .top-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      align-items: stretch;
-    }
-    .install-icon-btn,
-    .geo-btn,
-    #get-weather-btn {
-      min-width: 130px;
     }
     .install-icon-btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.3rem;
-      padding: 0 1.2rem;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       border: none;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
       color: #fff;
-      font: inherit;
-      font-size: 0.95rem;
-      font-weight: 500;
       cursor: pointer;
       transition: background 0.2s;
-      white-space: nowrap;
     }
     .install-icon-btn:hover { background: rgba(255,255,255,0.25); }
-    .install-icon-btn:active { transform: scale(0.97); }
     .input-group {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: 1.25rem;
-      align-items: center;
+      margin-bottom: 24px;
+      align-items: stretch;
     }
     .geo-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 40px;
-      padding: 0 0.65rem;
+      flex-shrink: 0;
+      width: 45px;
+      height: 45px;
+      padding: 0;
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
+      border-radius: 12px;
       background: rgba(255,255,255,0.1);
       color: #fff;
-      font: inherit;
-      font-size: 0.78rem;
-      font-weight: 500;
-      white-space: nowrap;
       cursor: pointer;
       transition: background 0.2s;
     }
@@ -110,9 +90,9 @@
     input[type=text] {
       flex: 1;
       padding: 0 0.85rem;
-      height: 40px;
+      height: 45px;
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
+      border-radius: 12px;
       background: rgba(255,255,255,0.04);
       color: #fff;
       font-family: inherit;
@@ -125,11 +105,11 @@
       border-color: rgba(255,255,255,0.5);
       background: rgba(255,255,255,0.07);
     }
-    button {
+    #get-weather-btn {
+      height: 45px;
       padding: 0 1.2rem;
-      height: 40px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       background: rgba(255,255,255,0.15);
       color: #fff;
       font-family: inherit;
@@ -139,9 +119,8 @@
       transition: background 0.2s, transform 0.15s;
       white-space: nowrap;
     }
-    button:hover { background: rgba(255,255,255,0.25); }
-    button:active { transform: scale(0.97); }
-    #get-weather-btn { min-width: 96px; }
+    #get-weather-btn:hover { background: rgba(255,255,255,0.25); }
+    #get-weather-btn:active { transform: scale(0.97); }
     #result {
       margin-top: 2.8rem;
     }
@@ -265,21 +244,18 @@
 
     @media (max-width: 480px) {
       body { padding: 0.5rem; }
-      .glass { padding: 1.25rem 1rem; border-radius: 20px; }
-      .top-row { margin-bottom: 0.85rem; }
-      .top-row .logo { font-size: 1.6rem; }
-      .input-group { gap: 0.35rem; }
-      #get-weather-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
-      input[type=text] { height: 44px; padding: 0 0.7rem; min-width: 0; }
-      .geo-btn { height: 44px; padding: 0 0.5rem; font-size: 0.72rem; }
-      .install-icon-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
-      .install-icon-btn,
-      .geo-btn,
-      #get-weather-btn { min-width: 110px; }
+      .glass { padding: 1.5rem 1.25rem; border-radius: 20px; }
+      .top-row { margin-bottom: 0.65rem; }
+      .top-row .logo { font-size: 1.4rem; }
+      .input-group { gap: 0.4rem; margin-bottom: 20px; }
+      #get-weather-btn { height: 44px; font-size: 0.85rem; }
+      input[type=text] { height: 44px; padding: 0 0.7rem; min-width: 0; font-size: 0.85rem; }
+      .geo-btn { width: 44px; height: 44px; }
+      .install-icon-btn { width: 30px; height: 30px; }
     }
 
     @media (min-width: 768px) {
-      .glass { padding: 2.5rem 2.5rem; }
+      .glass { padding: 3rem 2.5rem; }
     }
   </style>
 </head>
@@ -287,14 +263,14 @@
   <div class="glass">
     <div class="top-row">
       <div class="logo">⛅ Weather</div>
-      <div class="top-actions">
-        <button id="install-btn" class="install-icon-btn" hidden title="Install app">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg> Install
-        </button>
-        <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">Use my location</button>
-      </div>
+      <button id="install-btn" class="install-icon-btn" hidden title="Install app">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg>
+      </button>
     </div>
     <div class="input-group">
+    <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+    </button>
     <input type="text" id="city-input" placeholder="City name or ZIP code…">
     <button id="get-weather-btn">Search</button>
   </div>
@@ -523,13 +499,14 @@
   }
 
   // Geolocation detection
+  const navSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
+  const checkSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
   async function detectLocation() {
     if (!navigator.geolocation) return;
     const btn = document.getElementById('geo-btn');
-    const origText = btn.textContent;
     btn.classList.add('loading');
     btn.classList.remove('success');
-    btn.textContent = 'Locating…';
     try {
       const pos = await new Promise((res, rej) =>
         navigator.geolocation.getCurrentPosition(res, rej, {
@@ -541,14 +518,13 @@
       await getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
       btn.classList.remove('loading');
       btn.classList.add('success');
-      btn.textContent = '✓ Located';
+      btn.innerHTML = checkSvg;
       setTimeout(() => {
         btn.classList.remove('success');
-        btn.textContent = origText;
+        btn.innerHTML = navSvg;
       }, 1200);
     } catch (_) {
       btn.classList.remove('loading');
-      btn.textContent = origText;
     }
   }
 
