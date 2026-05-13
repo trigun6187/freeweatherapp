@@ -35,17 +35,19 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
       color: #fff;
     }
-    .title-row {
+    .top-row {
       display: flex;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      justify-content: space-between;
     }
-    h1 {
-      font-size: clamp(1.25rem, 0.85rem + 1.5vw, 2rem);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      text-align: center;
-      flex: 1;
+    .top-row .logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);
+      line-height: 1;
     }
     .install-icon-btn {
       display: inline-flex;
@@ -63,7 +65,6 @@
       cursor: pointer;
       transition: background 0.2s;
       white-space: nowrap;
-      margin-left: auto;
     }
     .install-icon-btn:hover { background: rgba(255,255,255,0.25); }
     .install-icon-btn:active { transform: scale(0.97); }
@@ -256,7 +257,8 @@
     @media (max-width: 480px) {
       body { padding: 0.5rem; }
       .glass { padding: 1.25rem 1rem; border-radius: 20px; }
-      .title-row { margin-bottom: 0.85rem; }
+      .top-row { margin-bottom: 0.85rem; }
+      .top-row .logo { font-size: 1.6rem; }
       .input-group { gap: 0.35rem; }
       #get-weather-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
       input[type=text] { height: 44px; padding: 0 0.7rem; min-width: 0; }
@@ -283,14 +285,14 @@
 </head>
 <body>
   <div class="glass">
-    <div class="title-row">
-      <h1>⛅ Weather</h1>
+    <div class="top-row">
+      <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">Use my location</button>
+      <div class="logo">⛅</div>
       <button id="install-btn" class="install-icon-btn" hidden title="Install app">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg> Install
       </button>
     </div>
     <div class="input-group">
-    <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">Use my location</button>
     <input type="text" id="city-input" placeholder="City name or ZIP code…">
     <button id="get-weather-btn">Search</button>
   </div>
