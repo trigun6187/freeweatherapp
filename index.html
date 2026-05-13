@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -296,32 +297,21 @@
     }
 
     /* ── Weather Map ── */
-    .map-placeholder {
-      aspect-ratio: 16 / 9;
+    #map {
+      height: 200px;
       border-radius: 14px;
-      background:
-        radial-gradient(ellipse at 30% 40%, rgba(30, 80, 150, 0.25) 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 60%, rgba(60, 120, 80, 0.15) 0%, transparent 50%),
-        rgba(10, 15, 25, 0.6);
-      background-color: #0a0f19;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      opacity: 0.55;
-      font-weight: 300;
       overflow: hidden;
-      position: relative;
     }
-    .map-placeholder::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.03) 28px, rgba(255,255,255,0.03) 29px),
-        repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,0.03) 28px, rgba(255,255,255,0.03) 29px);
-      border-radius: 14px;
+    #map .leaflet-control-attribution {
+      background: rgba(0,0,0,0.35) !important;
+      color: rgba(255,255,255,0.2) !important;
+      font-size: 9px !important;
+      padding: 1px 5px !important;
     }
+    #map .leaflet-control-attribution a {
+      color: rgba(255,255,255,0.25) !important;
+    }
+    #map .leaflet-control-zoom { display: none; }
 
     /* ── Precipitation ── */
     .precip-value {
@@ -431,6 +421,7 @@
 
   <button id="install-btn" hidden aria-label="Install app"></button>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
 (async function () {
@@ -754,7 +745,7 @@
             </div>
           </div>
           <div class="card-body">
-            <div class="map-placeholder">${name.replace('📍 ','')}</div>
+            <div id="map"></div>
           </div>
         </div>
 
@@ -793,6 +784,23 @@
 
     resultEl.innerHTML = html;
     if (window.lucide) lucide.createIcons();
+    if (window._weatherMap) { window._weatherMap.remove(); window._weatherMap = null; }
+    const mapEl = document.getElementById('map');
+    if (mapEl && window.L) {
+      window._weatherMap = L.map(mapEl, {
+        zoomControl: false,
+        attributionControl: true,
+        scrollWheelZoom: false,
+        dragging: true,
+      }).setView([latitude, longitude], 7);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+      }).addTo(window._weatherMap);
+      L.marker([latitude, longitude]).addTo(window._weatherMap);
+      setTimeout(() => { if (window._weatherMap) window._weatherMap.invalidateSize(); }, 200);
+    }
   }
 
   async function getWeather(query) {
