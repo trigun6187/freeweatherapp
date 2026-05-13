@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -301,23 +300,6 @@
       opacity: 0.4;
     }
 
-    /* ── Weather Map ── */
-    #map {
-      height: 200px;
-      border-radius: 14px;
-      overflow: hidden;
-    }
-    #map .leaflet-control-attribution {
-      background: rgba(0,0,0,0.35) !important;
-      color: rgba(255,255,255,0.2) !important;
-      font-size: 9px !important;
-      padding: 1px 5px !important;
-    }
-    #map .leaflet-control-attribution a {
-      color: rgba(255,255,255,0.25) !important;
-    }
-    #map .leaflet-control-zoom { display: none; }
-
     /* ── Precipitation ── */
     .precip-value {
       font-size: clamp(2.2rem, 1.6rem + 3vw, 3.2rem);
@@ -428,7 +410,6 @@
 
   <button id="install-btn" hidden aria-label="Install app"></button>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
 (async function () {
@@ -747,18 +728,6 @@
         <div class="card">
           <div class="card-header">
             <div class="card-header-left">
-              <i data-lucide="map-pin"></i>
-              <span>Weather map</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <div id="map"></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-header-left">
               <i data-lucide="cloud-rain"></i>
               <span>Precipitation</span>
             </div>
@@ -791,23 +760,6 @@
 
     resultEl.innerHTML = html;
     if (window.lucide) lucide.createIcons();
-    if (window._weatherMap) { window._weatherMap.remove(); window._weatherMap = null; }
-    const mapEl = document.getElementById('map');
-    if (mapEl && window.L) {
-      window._weatherMap = L.map(mapEl, {
-        zoomControl: false,
-        attributionControl: true,
-        scrollWheelZoom: false,
-        dragging: true,
-      }).setView([latitude, longitude], 7);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
-        subdomains: 'abcd',
-        maxZoom: 19,
-      }).addTo(window._weatherMap);
-      L.marker([latitude, longitude]).addTo(window._weatherMap);
-      setTimeout(() => { if (window._weatherMap) window._weatherMap.invalidateSize(); }, 200);
-    }
   }
 
   async function getWeather(query) {
