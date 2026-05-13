@@ -38,48 +38,49 @@
     .title-row {
       display: flex;
       align-items: center;
-      justify-content: center;
       margin-bottom: 1rem;
-      position: relative;
     }
     h1 {
       font-size: clamp(1.25rem, 0.85rem + 1.5vw, 2rem);
       font-weight: 600;
       letter-spacing: -0.02em;
+      text-align: center;
+      flex: 1;
     }
     .install-icon-btn {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      translate: 0 -50%;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.06);
+      gap: 0.3rem;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.04);
       color: #fff;
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 500;
       cursor: pointer;
       transition: background 0.2s, opacity 0.2s;
-      opacity: 0.7;
+      opacity: 0.4;
+      white-space: nowrap;
+      margin-left: auto;
     }
     .install-icon-btn:hover { background: rgba(255,255,255,0.15); opacity: 1; }
     .input-group {
       display: flex;
       gap: 0.5rem;
       margin-bottom: 1.25rem;
+      align-items: center;
     }
     .geo-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: 44px;
-      min-height: 44px;
+      width: 40px;
+      height: 40px;
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
+      border-radius: 10px;
       background: rgba(255,255,255,0.1);
       color: #fff;
       cursor: pointer;
@@ -98,13 +99,13 @@
     @keyframes geo-spin {
       to { transform: rotate(360deg); }
     }
-    .geo-icon { width: 18px; height: 18px; opacity: 0.8; stroke: currentColor; }
+    .geo-icon { width: 18px; height: 18px; opacity: 0.85; }
     input[type=text] {
       flex: 1;
-      padding: 0.75rem 1rem;
-      min-height: 44px;
+      padding: 0 0.85rem;
+      height: 40px;
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
+      border-radius: 10px;
       background: rgba(255,255,255,0.04);
       color: #fff;
       font-family: inherit;
@@ -118,10 +119,10 @@
       background: rgba(255,255,255,0.07);
     }
     button {
-      padding: 0.75rem 1.5rem;
-      min-height: 44px;
+      padding: 0 1.2rem;
+      height: 40px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       background: rgba(255,255,255,0.15);
       color: #fff;
       font-family: inherit;
@@ -258,11 +259,10 @@
       body { padding: 0.5rem; }
       .glass { padding: 1.25rem 1rem; border-radius: 20px; }
       .title-row { margin-bottom: 0.85rem; }
-      .input-group { gap: 0.4rem; }
-      #get-weather-btn { padding: 1rem 0.7rem; min-height: 50px; font-size: 0.85rem; }
-      input[type=text] { padding: 1rem 0.7rem; min-height: 50px; min-width: 0; }
-      .geo-btn { width: 50px; min-height: 50px; }
-      .geo-icon { width: 22px; height: 22px; }
+      .input-group { gap: 0.35rem; }
+      #get-weather-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
+      input[type=text] { height: 44px; padding: 0 0.7rem; min-width: 0; }
+      .geo-btn { width: 44px; height: 44px; }
       .hero {
         display: flex;
         flex-direction: column;
@@ -275,8 +275,7 @@
       .forecast-row { gap: 0.4rem; padding: 0.15rem 0 0.5rem; }
       .mini-card { padding: 0.7rem 0.35rem 0.75rem; }
       .mini-card .icon { width: 24px; height: 24px; }
-      .install-icon-btn { width: 34px; height: 34px; }
-      .install-icon-btn i { width: 16px !important; height: 16px !important; }
+      .install-icon-btn { font-size: 0.68rem; padding: 0.2rem 0.5rem; }
     }
 
     @media (min-width: 768px) {
@@ -289,12 +288,12 @@
     <div class="title-row">
       <h1>⛅ Weather</h1>
       <button id="install-btn" class="install-icon-btn" hidden title="Install app">
-        <i data-lucide="arrow-down-to-line" style="width:18px;height:18px"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg> Install
       </button>
     </div>
     <div class="input-group">
     <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">
-      <i data-lucide="navigation" class="geo-icon"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
     </button>
     <input type="text" id="city-input" placeholder="City name or ZIP code…">
     <button id="get-weather-btn">Search</button>
@@ -513,6 +512,10 @@
   }
 
   // Geolocation detection
+  // ---- icons for geo button ----
+  const navSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
+  const checkSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="geo-icon"><polyline points="20 6 9 17 4 12"/></svg>';
+
   async function detectLocation() {
     if (!navigator.geolocation) return;
     const btn = document.getElementById('geo-btn');
@@ -530,12 +533,11 @@
       await getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
       btn.classList.remove('loading');
       btn.classList.add('success');
-      icon.setAttribute('data-lucide', 'check');
-      if (window.lucide) lucide.createIcons();
+      icon.outerHTML = checkSvg;
       setTimeout(() => {
         btn.classList.remove('success');
-        icon.setAttribute('data-lucide', 'navigation');
-        if (window.lucide) lucide.createIcons();
+        const cur = btn.querySelector('.geo-icon');
+        if (cur) cur.outerHTML = navSvg;
       }, 1200);
     } catch (_) {
       btn.classList.remove('loading');
@@ -587,9 +589,6 @@
   window.addEventListener('appinstalled', () => {
     document.getElementById('install-btn').hidden = true;
   });
-
-  // Initial Lucide render for static icons (geo, install)
-  if (window.lucide) lucide.createIcons();
 
   // Auto-detect location on first load
   if (!sessionStorage.getItem('geo-done')) {
