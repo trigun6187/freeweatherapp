@@ -51,21 +51,22 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      padding: 0.25rem 0.6rem;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 6px;
-      background: rgba(255,255,255,0.04);
+      padding: 0 1.2rem;
+      height: 40px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
       color: #fff;
       font: inherit;
-      font-size: 0.72rem;
+      font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
-      transition: background 0.2s, opacity 0.2s;
-      opacity: 0.4;
+      transition: background 0.2s;
       white-space: nowrap;
       margin-left: auto;
     }
-    .install-icon-btn:hover { background: rgba(255,255,255,0.15); opacity: 1; }
+    .install-icon-btn:hover { background: rgba(255,255,255,0.25); }
+    .install-icon-btn:active { transform: scale(0.97); }
     .input-group {
       display: flex;
       gap: 0.5rem;
@@ -272,7 +273,7 @@
       .forecast-row { gap: 0.4rem; padding: 0.15rem 0 0.5rem; }
       .mini-card { padding: 0.7rem 0.35rem 0.75rem; }
       .mini-card .icon { width: 24px; height: 24px; }
-      .install-icon-btn { font-size: 0.68rem; padding: 0.2rem 0.5rem; }
+      .install-icon-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
     }
 
     @media (min-width: 768px) {
