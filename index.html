@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Free Weather App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f0c29">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      transition: background 0.8s ease;
+      padding: 1rem;
+    }
+    .glass {
+      width: 100%;
+      max-width: 560px;
+      padding: 2.5rem 2rem;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.37),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    h1 {
+      font-size: clamp(1.25rem, 0.85rem + 1.5vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+    .install-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.65rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .install-btn:hover { background: rgba(255,255,255,0.15); }
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .geo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 44px;
+      min-height: 44px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .geo-btn:hover { background: rgba(255,255,255,0.15); }
+    .geo-btn.loading { pointer-events: none; }
+    .geo-btn.loading .geo-icon {
+      animation: geo-spin 0.7s linear infinite;
+    }
+    .geo-btn.success {
+      border-color: rgba(76, 175, 80, 0.5);
+      box-shadow: 0 0 14px rgba(76, 175, 80, 0.35);
+      transition: border-color 0s, box-shadow 0s;
+    }
+    @keyframes geo-spin {
+      to { transform: rotate(360deg); }
+    }
+    .geo-icon { width: 18px; height: 18px; opacity: 0.8; stroke: currentColor; }
+    input[type=text] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      min-height: 44px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input[type=text]::placeholder { color: rgba(255,255,255,0.4); }
+    input[type=text]:focus {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.1);
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      min-height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    button:hover { background: rgba(255,255,255,0.25); }
+    button:active { transform: scale(0.97); }
+    #result {
+      margin-top: 1.5rem;
+    }
+    .city-name {
+      font-size: clamp(1.25rem, 0.7rem + 2vw, 2.2rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+    .hero {
+      text-align: center;
+      padding: 1.25rem 0 2rem;
+    }
+    .hero-icon {
+      margin-bottom: 0.15rem;
+    }
+    .hero-icon svg,
+    .hero-icon i {
+      width: 60px;
+      height: 60px;
+      opacity: 0.9;
+    }
+    .hero-day {
+      font-size: clamp(0.85rem, 0.7rem + 0.5vw, 1.1rem);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      margin-bottom: 0.1rem;
+    }
+    .hero-temp {
+      font-size: clamp(3.5rem, 2.2rem + 5vw, 5rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .hero-hilo {
+      margin-top: 0.5rem;
+      font-size: clamp(0.9rem, 0.75rem + 0.5vw, 1.15rem);
+      opacity: 0.7;
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+    }
+    .hero-hilo span { display: flex; align-items: center; gap: 0.2rem; }
+    .insight {
+      margin: 0.75rem 0 1.25rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      font-size: 0.82rem;
+      font-weight: 400;
+      opacity: 0.75;
+      line-height: 1.55;
+    }
+    .forecast-heading {
+      font-size: clamp(0.85rem, 0.7rem + 0.5vw, 1.1rem);
+      font-weight: 500;
+      opacity: 0.7;
+      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .forecast-row {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: auto;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.25rem 0 0.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .forecast-row::-webkit-scrollbar { height: 4px; }
+    .forecast-row::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 2px; }
+    .forecast-row::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+    .mini-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 0.4rem 0.8rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      transition: background 0.2s;
+    }
+    .mini-card:hover { background: rgba(255,255,255,0.1); }
+
+    @media (min-width: 481px) {
+      .forecast-row {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+        overflow: visible;
+        scroll-snap-type: none;
+      }
+    }
+    .mini-card .day {
+      font-size: clamp(0.65rem, 0.55rem + 0.3vw, 0.85rem);
+      font-weight: 500;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .mini-card .icon {
+      width: 26px;
+      height: 26px;
+      opacity: 0.85;
+      stroke: currentColor;
+    }
+    .mini-card .temp {
+      font-size: clamp(0.75rem, 0.55rem + 0.8vw, 1.05rem);
+      font-weight: 600;
+      opacity: 0.8;
+      text-align: center;
+      line-height: 1.35;
+    }
+    .loading-text {
+      text-align: center;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 0.5rem; }
+      .glass { padding: 1.25rem 1rem; border-radius: 20px; }
+      h1 { margin-bottom: 0.85rem; }
+      .input-group { flex-wrap: wrap; gap: 0.4rem; }
+      #get-weather-btn { flex: 0 0 100%; padding: 1rem; min-height: 50px; }
+      input[type=text] { padding: 1rem 0.85rem; min-height: 50px; min-width: 0; }
+      .geo-btn { width: 50px; min-height: 50px; }
+      .geo-icon { width: 22px; height: 22px; }
+      .hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 33vh;
+        padding: 0.75rem 0 1rem;
+      }
+      .hero-icon svg, .hero-icon i { width: 48px; height: 48px; }
+      .insight { font-size: 0.78rem; padding: 0.65rem 0.85rem; }
+      .forecast-row { gap: 0.4rem; padding: 0.15rem 0 0.5rem; }
+      .mini-card { padding: 0.7rem 0.35rem 0.75rem; }
+      .mini-card .icon { width: 24px; height: 24px; }
+      .install-btn { padding: 0.6rem; }
+    }
+
+    @media (min-width: 768px) {
+      .glass { padding: 2.5rem 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="glass">
+  <h1>⛅ Weather</h1>
+  <button id="install-btn" class="install-btn" hidden>
+    <i data-lucide="arrow-down-to-line" style="width:16px;height:16px"></i> Install App
+  </button>
+  <div class="input-group">
+    <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">
+      <i data-lucide="map-pin" class="geo-icon"></i>
+    </button>
+    <input type="text" id="city-input" placeholder="City name or ZIP code…">
+    <button id="get-weather-btn">Search</button>
+  </div>
+  <div id="result"></div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+(async function () {
+  const resultEl = document.getElementById('result');
+
+  // ---- fallback coordinates for common city aliases ----
+  const aliasCoords = {
+    'London':    {lat: 51.5074,  lon: -0.1278},
+    'Paris':     {lat: 48.8566,  lon:  2.3518},
+    'Berlin':    {lat: 52.5200,  lon: 13.4050},
+    'New York':  {lat: 40.7128,  lon: -74.0060}
+  };
+
+  // Lucide icon names for WMO weather codes
+  const iconMap = {
+    0:'sun', 1:'cloud-sun', 2:'cloud-sun', 3:'cloud',
+    45:'cloud-fog', 48:'cloud-fog',
+    51:'cloud-rain', 53:'cloud-rain', 55:'cloud-rain',
+    56:'cloud-rain', 57:'cloud-rain',
+    61:'cloud-rain', 63:'cloud-rain', 65:'cloud-rain',
+    66:'cloud-rain', 67:'cloud-rain',
+    71:'cloud-snow', 73:'cloud-snow', 75:'cloud-snow', 77:'cloud-snow',
+    80:'cloud-rain', 81:'cloud-rain', 82:'cloud-rain',
+    85:'cloud-snow', 86:'cloud-snow',
+    95:'cloud-lightning', 96:'cloud-lightning', 99:'cloud-lightning'
+  };
+
+  // Weather condition descriptions
+  function weatherDescription(code) {
+    if (code <= 1) return 'mostly clear';
+    if (code === 2) return 'partly cloudy';
+    if (code === 3) return 'overcast';
+    if (code === 45 || code === 48) return 'foggy';
+    if (code >= 51 && code <= 55) return 'drizzly';
+    if (code >= 56 && code <= 57) return 'freezing drizzly';
+    if (code >= 61 && code <= 65) return 'rainy';
+    if (code >= 66 && code <= 67) return 'freezing rainy';
+    if (code >= 71 && code <= 77) return 'snowy';
+    if (code >= 80 && code <= 82) return 'showery';
+    if (code >= 85 && code <= 86) return 'snow showery';
+    if (code >= 95) return 'stormy';
+    return 'cloudy';
+  }
+
+  function generateInsight(daily) {
+    const todayCode = daily.weathercode[0];
+    const todayHigh = Math.round(daily.temperature_2m_max[0]);
+    const dayLabels = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const todayLabel = dayLabels[new Date().getDay()];
+
+    const desc = weatherDescription(todayCode);
+    const morning = todayCode <= 1 || todayCode === 2 ? 'skies' : 'conditions';
+    let insight = `Expect ${desc} ${morning} today with a high of ${todayHigh}°.`;
+
+    const weatherCodes = daily.weathercode;
+    const hasRainLater = weatherCodes.slice(1).some(c =>
+      (c >= 51 && c <= 57) || (c >= 61 && c <= 67) || (c >= 80 && c <= 82)
+    );
+    const hasSnowLater = weatherCodes.slice(1).some(c =>
+      (c >= 71 && c <= 77) || (c >= 85 && c <= 86)
+    );
+    const hasStormLater = weatherCodes.slice(1).some(c => c >= 95);
+
+    if (hasRainLater || hasSnowLater || hasStormLater) {
+      const firstBad = weatherCodes.slice(1).findIndex(c =>
+        (c >= 51 && c <= 57) || (c >= 61 && c <= 67) || (c >= 80 && c <= 82) ||
+        (c >= 71 && c <= 77) || (c >= 85 && c <= 86) || c >= 95
+      );
+      const badDay = dayLabels[(new Date().getDay() + 1 + firstBad) % 7];
+      if (hasRainLater) insight += ` Rain moves in by ${badDay}.`;
+      else if (hasSnowLater) insight += ` Snow arrives by ${badDay}.`;
+      else insight += ` Storms expected by ${badDay}.`;
+    } else {
+      const allClear = daily.weathercode.slice(1).every(c => c <= 2);
+      if (allClear) insight += ' The rest of the week looks clear.';
+      else if (daily.weathercode.slice(1).every(c => c <= 3 || c === 45 || c === 48))
+        insight += ' The rest of the week stays mostly cloudy.';
+      else insight += ' The rest of the week should remain quiet.';
+    }
+
+    return insight;
+  }
+
+  // Background gradient based on primary weather code
+  const weatherGradients = {
+    sunny: 'linear-gradient(135deg, #f12711 0%, #f5af19 50%, #2980b9 100%)',
+    cloudy: 'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 50%, #7f8c8d 100%)',
+    rainy: 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 50%, #5c6bc0 100%)',
+    snowy: 'linear-gradient(135deg, #4a6fa5 0%, #7eb8da 50%, #b8c6db 100%)',
+    stormy: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)'
+  };
+  function codeToCondition(code) {
+    if (code <= 1) return 'sunny';
+    if (code <= 3 || code === 45 || code === 48) return 'cloudy';
+    if ((code >= 51 && code <= 57) || (code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return 'rainy';
+    if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snowy';
+    if (code >= 95) return 'stormy';
+    return 'cloudy';
+  }
+
+  // Resolve coordinates from city name or postal/ZIP code
+  async function resolveCoordinates(query) {
+    const normalized = query.trim();
+
+    // 1️⃣ Check alias map first
+    if (Object.hasOwn(aliasCoords, normalized)) {
+      const {lat: latitude, lon: longitude} = aliasCoords[normalized];
+      return {latitude, longitude, name: normalized};
+    }
+
+    // 2️⃣ First try Zippopotam.us for US ZIP codes
+    if (/^\d{5}$/.test(normalized)) {
+      try {
+        const zipRes = await fetch(`https://api.zippopotam.us/us/${normalized}`);
+        if (zipRes.ok) {
+          const zipData = await zipRes.json();
+          const place = zipData.places[0];
+          return {
+            latitude: parseFloat(place.latitude),
+            longitude: parseFloat(place.longitude),
+            name: `${place['place name']}, ${place.state}`
+          };
+        }
+      } catch (_) { /* fall through to geocoding API */ }
+    }
+
+    // 3️⃣ Open-Meteo Geocoding API — handles both names and non-US postal codes
+    try {
+      const searchRes = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(normalized)}&count=1`
+      );
+      if (!searchRes.ok) throw new Error(`Search failed (${searchRes.status})`);
+      const searchResult = await searchRes.json();
+      if (!searchResult.results || searchResult.results.length === 0) {
+        throw new Error('No matching locations found');
+      }
+      const {latitude, longitude, name, country} = searchResult.results[0];
+      return {latitude, longitude, name: `${name}, ${country}`};
+    } catch (e) {
+      throw new Error(`Unable to locate "${normalized}". ${e.message}`);
+    }
+  }
+
+  // Shared forecast fetch and render
+  async function renderForecast(latitude, longitude, name) {
+    const forecastRes = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+        `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+        `&forecast_days=7&timezone=auto&temperature_unit=fahrenheit&current_weather=true`
+    );
+    if (!forecastRes.ok) throw new Error('Weather service error');
+    const forecast = await forecastRes.json();
+
+    const {daily, current_weather} = forecast;
+    const todayCode = current_weather?.weathercode ?? daily.weathercode[0];
+    document.body.style.background = weatherGradients[codeToCondition(todayCode)];
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const todayName = dayNames[new Date().getDay()];
+    const currentTemp = Math.round(current_weather?.temperature ?? daily.temperature_2m_max[0]);
+    const maxF = daily.temperature_2m_max[0];
+    const minF = daily.temperature_2m_min[0];
+    const heroIcon = iconMap[todayCode] ?? 'cloud';
+
+    let html = `<span class="city-name">${name}</span>
+      <div class="hero">
+        <div class="hero-icon"><i data-lucide="${heroIcon}" class="icon"></i></div>
+        <div class="hero-day">${todayName}</div>
+        <div class="hero-temp">${currentTemp}°</div>
+        <div class="hero-hilo">
+          <span>↑ ${Math.round(maxF)}°</span>
+          <span>↓ ${Math.round(minF)}°</span>
+        </div>
+      </div>
+      <div class="insight">${generateInsight(daily)}</div>
+      <div class="forecast-heading">7‑Day Forecast</div>
+      <div class="forecast-row">`;
+    for (let i = 0; i < daily.weathercode.length && i < 7; i++) {
+      const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][i];
+      const maxF = daily.temperature_2m_max[i];
+      const minF = daily.temperature_2m_min[i];
+      const maxC = Math.round((maxF - 32) * 5 / 9);
+      const minC = Math.round((minF - 32) * 5 / 9);
+      const icon = iconMap[daily.weathercode[i]] ?? 'cloud';
+      html += `<div class="mini-card">
+        <span class="day">${dayName}</span>
+        <i data-lucide="${icon}" class="icon"></i>
+        <span class="temp">${Math.round(maxF)}°<br>${Math.round(minF)}°</span>
+      </div>`;
+    }
+    html += '</div>';
+    resultEl.innerHTML = html;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  // Search by city name or ZIP code
+  async function getWeather(query) {
+    resultEl.innerHTML = '<div class="loading-text">⏳ Loading…</div>';
+    const {latitude, longitude, name} = await resolveCoordinates(query);
+    await renderForecast(latitude, longitude, name);
+  }
+
+  // Get weather by direct coordinates (geolocation path)
+  async function getWeatherByCoords(latitude, longitude) {
+    resultEl.innerHTML = '<div class="loading-text">⏳ Loading…</div>';
+    const input = document.getElementById('city-input');
+    input.value = '';
+    input.placeholder = '📍 Current location';
+    await renderForecast(latitude, longitude, '📍 Current Location');
+  }
+
+  // Geolocation detection
+  async function detectLocation() {
+    if (!navigator.geolocation) return;
+    const btn = document.getElementById('geo-btn');
+    const icon = btn.querySelector('.geo-icon');
+    btn.classList.add('loading');
+    btn.classList.remove('success');
+    try {
+      const pos = await new Promise((res, rej) =>
+        navigator.geolocation.getCurrentPosition(res, rej, {
+          enableHighAccuracy: false,
+          timeout: 8000,
+          maximumAge: 600000
+        })
+      );
+      await getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+      btn.classList.remove('loading');
+      btn.classList.add('success');
+      icon.setAttribute('data-lucide', 'check');
+      if (window.lucide) lucide.createIcons();
+      setTimeout(() => {
+        btn.classList.remove('success');
+        icon.setAttribute('data-lucide', 'map-pin');
+        if (window.lucide) lucide.createIcons();
+      }, 1200);
+    } catch (_) {
+      btn.classList.remove('loading');
+    }
+  }
+
+  // UI wiring
+  document.getElementById('get-weather-btn').addEventListener('click', async () => {
+    const query = document.getElementById('city-input').value.trim();
+    if (!query) return;
+    resultEl.innerHTML = '<div class="loading-text">⏳ Loading…</div>';
+    try {
+      await getWeather(query);
+    } catch (e) {
+      resultEl.textContent = `❗ ${e.message}`;
+    }
+  });
+
+  document.getElementById('city-input').addEventListener('keypress', e => {
+    if (e.key === 'Enter') document.getElementById('get-weather-btn').click();
+  });
+
+  document.getElementById('city-input').addEventListener('focus', () => {
+    document.getElementById('city-input').placeholder = 'City name or ZIP code…';
+  });
+
+  document.getElementById('geo-btn').addEventListener('click', detectLocation);
+
+  // ---- PWA ----
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('install-btn');
+    btn.hidden = false;
+    btn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      btn.hidden = true;
+    });
+  });
+
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('install-btn').hidden = true;
+  });
+
+  // Initial Lucide render for static icons (geo, install)
+  if (window.lucide) lucide.createIcons();
+
+  // Auto-detect location on first load
+  if (!sessionStorage.getItem('geo-done')) {
+    sessionStorage.setItem('geo-done', '1');
+    detectLocation();
+  }
+})();
+</script>
+</body>
+</html>
