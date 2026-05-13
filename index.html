@@ -220,7 +220,8 @@
       flex-direction: column;
       align-items: center;
       gap: 0.35rem;
-      min-width: 64px;
+      width: 64px;
+      flex-shrink: 0;
       scroll-snap-align: start;
     }
     .h-temp {
@@ -267,13 +268,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
       gap: 0.3rem;
-      min-width: 80px;
-      padding: 0.7rem 0.35rem;
+      width: 80px;
+      flex-shrink: 0;
+      padding: 0.7rem 0.15rem;
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(0,0,0,0.2);
       scroll-snap-align: start;
+    }
+    .ten-day-pill > * {
+      text-align: center;
+      width: 100%;
     }
     .pill-hilo {
       font-size: 0.8rem;
@@ -285,6 +292,7 @@
       width: 24px;
       height: 24px;
       opacity: 0.8;
+      flex-shrink: 0;
     }
     .pill-precip {
       font-size: 0.65rem;
@@ -407,9 +415,9 @@
       .card { padding: 16px; }
       .ten-day-scroll { padding: 0.25rem 16px; margin: 0 -16px; }
       .hourly-scroll { padding: 0.25rem 16px; margin: 0 -16px; }
-      .ten-day-pill { min-width: 72px; padding: 0.6rem 0.3rem; }
+      .ten-day-pill { width: 72px; padding: 0.6rem 0.15rem; }
       .wind-widget { min-height: 170px; }
-      .hourly-col { min-width: 56px; }
+      .hourly-col { width: 56px; }
     }
   </style>
 </head>
