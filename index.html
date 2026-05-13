@@ -35,32 +35,37 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
       color: #fff;
     }
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      position: relative;
+    }
     h1 {
       font-size: clamp(1.25rem, 0.85rem + 1.5vw, 2rem);
       font-weight: 600;
       letter-spacing: -0.02em;
-      margin-bottom: 1.25rem;
-      text-align: center;
     }
-    .install-btn {
+    .install-icon-btn {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      translate: 0 -50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 0.65rem;
-      margin-bottom: 1rem;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.08);
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
       color: #fff;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 500;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, opacity 0.2s;
+      opacity: 0.7;
     }
-    .install-btn:hover { background: rgba(255,255,255,0.15); }
+    .install-icon-btn:hover { background: rgba(255,255,255,0.15); opacity: 1; }
     .input-group {
       display: flex;
       gap: 0.5rem;
@@ -75,7 +80,7 @@
       min-height: 44px;
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 12px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.1);
       color: #fff;
       cursor: pointer;
       transition: background 0.2s;
@@ -100,17 +105,17 @@
       min-height: 44px;
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 12px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.04);
       color: #fff;
       font-family: inherit;
       font-size: 0.95rem;
       outline: none;
       transition: border-color 0.2s, background 0.2s;
     }
-    input[type=text]::placeholder { color: rgba(255,255,255,0.4); }
+    input[type=text]::placeholder { color: rgba(255,255,255,0.35); }
     input[type=text]:focus {
       border-color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.07);
     }
     button {
       padding: 0.75rem 1.5rem;
@@ -129,7 +134,7 @@
     button:hover { background: rgba(255,255,255,0.25); }
     button:active { transform: scale(0.97); }
     #result {
-      margin-top: 1.5rem;
+      margin-top: 2.8rem;
     }
     .city-name {
       font-size: clamp(1.25rem, 0.7rem + 2vw, 2.2rem);
@@ -252,10 +257,10 @@
     @media (max-width: 480px) {
       body { padding: 0.5rem; }
       .glass { padding: 1.25rem 1rem; border-radius: 20px; }
-      h1 { margin-bottom: 0.85rem; }
-      .input-group { flex-wrap: wrap; gap: 0.4rem; }
-      #get-weather-btn { flex: 0 0 100%; padding: 1rem; min-height: 50px; }
-      input[type=text] { padding: 1rem 0.85rem; min-height: 50px; min-width: 0; }
+      .title-row { margin-bottom: 0.85rem; }
+      .input-group { gap: 0.4rem; }
+      #get-weather-btn { padding: 1rem 0.7rem; min-height: 50px; font-size: 0.85rem; }
+      input[type=text] { padding: 1rem 0.7rem; min-height: 50px; min-width: 0; }
       .geo-btn { width: 50px; min-height: 50px; }
       .geo-icon { width: 22px; height: 22px; }
       .hero {
@@ -270,7 +275,8 @@
       .forecast-row { gap: 0.4rem; padding: 0.15rem 0 0.5rem; }
       .mini-card { padding: 0.7rem 0.35rem 0.75rem; }
       .mini-card .icon { width: 24px; height: 24px; }
-      .install-btn { padding: 0.6rem; }
+      .install-icon-btn { width: 34px; height: 34px; }
+      .install-icon-btn i { width: 16px !important; height: 16px !important; }
     }
 
     @media (min-width: 768px) {
@@ -279,14 +285,16 @@
   </style>
 </head>
 <body>
-<div class="glass">
-  <h1>⛅ Weather</h1>
-  <button id="install-btn" class="install-btn" hidden>
-    <i data-lucide="arrow-down-to-line" style="width:16px;height:16px"></i> Install App
-  </button>
-  <div class="input-group">
+  <div class="glass">
+    <div class="title-row">
+      <h1>⛅ Weather</h1>
+      <button id="install-btn" class="install-icon-btn" hidden title="Install app">
+        <i data-lucide="arrow-down-to-line" style="width:18px;height:18px"></i>
+      </button>
+    </div>
+    <div class="input-group">
     <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">
-      <i data-lucide="map-pin" class="geo-icon"></i>
+      <i data-lucide="navigation" class="geo-icon"></i>
     </button>
     <input type="text" id="city-input" placeholder="City name or ZIP code…">
     <button id="get-weather-btn">Search</button>
@@ -526,7 +534,7 @@
       if (window.lucide) lucide.createIcons();
       setTimeout(() => {
         btn.classList.remove('success');
-        icon.setAttribute('data-lucide', 'map-pin');
+        icon.setAttribute('data-lucide', 'navigation');
         if (window.lucide) lucide.createIcons();
       }, 1200);
     } catch (_) {
