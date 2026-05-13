@@ -206,10 +206,12 @@
       display: flex;
       gap: 0.5rem;
       overflow-x: auto;
-      padding: 0.25rem 0 0.25rem;
+      padding: 0.25rem 20px;
+      margin: 0 -20px;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
     }
+
     .hourly-scroll::-webkit-scrollbar { height: 3px; }
     .hourly-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 2px; }
     .hourly-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
@@ -252,10 +254,12 @@
       display: flex;
       gap: 0.6rem;
       overflow-x: auto;
-      padding: 0.25rem 0 0.25rem;
+      padding: 0.25rem 20px;
+      margin: 0 -20px;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
     }
+
     .ten-day-scroll::-webkit-scrollbar { height: 3px; }
     .ten-day-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 2px; }
     .ten-day-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
@@ -401,6 +405,8 @@
       .hero { padding: 1.5rem 0 1.5rem; }
       .hero-icon svg, .hero-icon i { width: 60px; height: 60px; }
       .card { padding: 16px; }
+      .ten-day-scroll { padding: 0.25rem 16px; margin: 0 -16px; }
+      .hourly-scroll { padding: 0.25rem 16px; margin: 0 -16px; }
       .ten-day-pill { min-width: 72px; padding: 0.6rem 0.3rem; }
       .wind-widget { min-height: 170px; }
       .hourly-col { min-width: 56px; }
