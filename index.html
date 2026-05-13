@@ -24,7 +24,7 @@
     .glass {
       width: 100%;
       max-width: 560px;
-      padding: 2.5rem 2rem;
+      padding: 20px 2rem 2.5rem;
       border-radius: 24px;
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(20px);
@@ -36,25 +36,27 @@
       color: #fff;
     }
     .top-row {
-      display: grid;
-      grid-template-columns: 115px 1fr 115px;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       margin-bottom: 0.75rem;
     }
+    .top-row .phantom {
+      width: 120px;
+      flex-shrink: 0;
+    }
     .top-row .logo {
-      text-align: center;
       font-size: clamp(1.7rem, 1.2rem + 2vw, 2.8rem);
       line-height: 1;
       font-weight: 800;
       letter-spacing: -0.03em;
     }
     .install-icon-btn {
-      justify-self: end;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.3rem;
-      width: 115px;
+      width: 120px;
       height: 30px;
       padding: 0 0.75rem;
       border: 1px solid rgba(255,255,255,0.15);
@@ -80,11 +82,11 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: 46px;
-      height: 46px;
+      width: 50px;
+      height: 50px;
       padding: 0;
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
+      border-radius: 14px;
       background: rgba(255,255,255,0.1);
       color: #fff;
       cursor: pointer;
@@ -100,9 +102,9 @@
     input[type=text] {
       flex: 1;
       padding: 0 0.85rem;
-      height: 46px;
+      height: 50px;
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
+      border-radius: 14px;
       background: rgba(255,255,255,0.04);
       color: #fff;
       font-family: inherit;
@@ -116,11 +118,11 @@
       background: rgba(255,255,255,0.07);
     }
     #get-weather-btn {
-      height: 46px;
-      width: 115px;
+      height: 50px;
+      width: 120px;
       padding: 0 1.2rem;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       background: rgba(255,255,255,0.15);
       color: #fff;
       font-family: inherit;
@@ -255,25 +257,25 @@
 
     @media (max-width: 480px) {
       body { padding: 0.5rem; }
-      .glass { padding: 1.5rem 1.25rem; border-radius: 20px; }
+      .glass { padding: 20px 1.25rem 1.5rem; border-radius: 20px; }
       .top-row { margin-bottom: 0.65rem; }
       .top-row .logo { font-size: 1.4rem; }
       .input-group { gap: 0.4rem; margin-bottom: 20px; }
-      #get-weather-btn { height: 46px; font-size: 0.85rem; }
-      input[type=text] { height: 46px; padding: 0 0.7rem; min-width: 0; font-size: 0.85rem; }
-      .geo-btn { width: 46px; height: 46px; }
+      #get-weather-btn { height: 50px; font-size: 0.85rem; }
+      input[type=text] { height: 50px; padding: 0 0.7rem; min-width: 0; font-size: 0.85rem; }
+      .geo-btn { width: 50px; height: 50px; }
       .install-icon-btn { height: 28px; font-size: 0.68rem; padding: 0 0.65rem; }
     }
 
     @media (min-width: 768px) {
-      .glass { padding: 3rem 2.5rem; }
+      .glass { padding: 20px 2.5rem 3rem; }
     }
   </style>
 </head>
 <body>
   <div class="glass">
     <div class="top-row">
-      <div></div>
+      <div class="phantom"></div>
       <div class="logo">⛅ Weather</div>
       <button id="install-btn" class="install-icon-btn" hidden title="Install app">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg> Install App
