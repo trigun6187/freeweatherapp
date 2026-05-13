@@ -20,23 +20,89 @@
       display: flex;
       justify-content: center;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.8s ease;
     }
     .container {
       width: 100%;
       max-width: 560px;
     }
 
+    /* ── Search Row ── */
+    .search-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      padding-top: 20px;
+    }
+    .geo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .geo-btn:hover { background: rgba(255,255,255,0.1); }
+    .geo-btn.loading { pointer-events: none; opacity: 0.5; }
+    .geo-btn.success {
+      border-color: rgba(76, 175, 80, 0.5);
+      box-shadow: 0 0 14px rgba(76, 175, 80, 0.35);
+    }
+    .geo-btn svg {
+      stroke: #fff;
+    }
+    #city-input {
+      flex: 1;
+      height: 44px;
+      padding: 0 0.85rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    #city-input::placeholder { color: rgba(255,255,255,0.35); }
+    #city-input:focus {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.5);
+    }
+    #get-weather-btn {
+      height: 44px;
+      padding: 0 1rem;
+      border: none;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    #get-weather-btn:hover { background: rgba(255,255,255,0.2); }
+    #get-weather-btn:active { transform: scale(0.97); }
+
     /* ── Hero (no card) ── */
     .hero {
       text-align: center;
-      padding: 2.5rem 0 2rem;
+      padding: 2rem 0 1.5rem;
     }
     .hero-icon svg,
     .hero-icon i {
       width: 72px;
       height: 72px;
       opacity: 0.85;
-      stroke: #fff;
     }
     .hero-condition {
       font-size: clamp(1rem, 0.85rem + 0.6vw, 1.3rem);
@@ -90,7 +156,6 @@
       height: 18px;
       opacity: 0.65;
       flex-shrink: 0;
-      stroke: #fff;
     }
     .card-header-left span {
       font-size: clamp(0.85rem, 0.7rem + 0.5vw, 1rem);
@@ -111,7 +176,6 @@
       background: rgba(255,255,255,0.05);
       cursor: pointer;
       opacity: 0.55;
-      stroke: #fff;
     }
     .card-header-right svg:hover,
     .card-header-right i:hover {
@@ -122,14 +186,11 @@
       font-size: clamp(0.85rem, 0.75rem + 0.3vw, 0.95rem);
       line-height: 1.55;
     }
-
-    /* ── AI Report chevron ── */
     .card-header > svg,
     .card-header > i {
       width: 18px;
       height: 18px;
       opacity: 0.5;
-      stroke: #fff;
       flex-shrink: 0;
     }
 
@@ -169,7 +230,10 @@
       width: 22px;
       height: 22px;
       opacity: 0.8;
-      stroke: #fff;
+    }
+    .hourly-col .h-icon {
+      width: 22px;
+      height: 22px;
     }
     .h-rain {
       font-size: 0.65rem;
@@ -216,7 +280,6 @@
       width: 24px;
       height: 24px;
       opacity: 0.8;
-      stroke: #fff;
     }
     .pill-precip {
       font-size: 0.65rem;
@@ -311,7 +374,6 @@
       width: 18px;
       height: 18px;
       opacity: 0.55;
-      stroke: #fff;
     }
     .wind-header span {
       font-size: 0.85rem;
@@ -330,18 +392,26 @@
       font-weight: 300;
     }
 
-    /* ── Install btn (hidden, for PWA) ── */
-    #install-btn {
-      display: none;
+    /* ── Loading ── */
+    .loading-text {
+      text-align: center;
+      opacity: 0.4;
+      padding: 3rem 0;
+      font-weight: 300;
+      font-size: 0.9rem;
     }
+
+    /* ── Install btn (hidden) ── */
+    #install-btn { display: none; }
 
     /* ── Responsive ── */
     @media (max-width: 480px) {
       body { padding: 0.6rem; }
-      .hero { padding: 2rem 0 1.5rem; }
+      .search-row { padding-top: 16px; }
+      .hero { padding: 1.5rem 0 1.5rem; }
       .hero-icon svg, .hero-icon i { width: 60px; height: 60px; }
       .card { padding: 16px; }
-      .ten-day-pill { min-width: 72px; }
+      .ten-day-pill { min-width: 72px; padding: 0.6rem 0.3rem; }
       .wind-widget { min-height: 170px; }
       .hourly-col { min-width: 56px; }
     }
@@ -349,268 +419,469 @@
 </head>
 <body>
   <div class="container">
-
-    <!-- ─── Hero (no card) ─── -->
-    <div class="hero">
-      <div class="hero-icon"><i data-lucide="cloud-sun"></i></div>
-      <div class="hero-condition">Mostly cloudy</div>
-      <div class="hero-temp">69°</div>
-      <div class="hero-extras">
-        <div>Feels like 76°</div>
-        <div>High 69° · Low 56°</div>
-      </div>
+    <div class="search-row">
+      <button id="geo-btn" class="geo-btn" title="Use my location" aria-label="Use my location">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      </button>
+      <input type="text" id="city-input" placeholder="City or ZIP code…">
+      <button id="get-weather-btn">Search</button>
     </div>
-
-    <div class="cards">
-
-      <!-- ─── AI Weather Report ─── -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <i data-lucide="sparkles"></i>
-            <span>AI Weather Report</span>
-          </div>
-          <i data-lucide="chevron-down"></i>
-        </div>
-        <div class="card-body">
-          Enjoy the pleasant temperatures and good air quality this afternoon, but grab an umbrella for a light rain shower late tonight.
-        </div>
-      </div>
-
-      <!-- ─── Weather Insight ─── -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <i data-lucide="trending-up"></i>
-            <span>Weather insight</span>
-          </div>
-        </div>
-        <div class="card-body insight-text">
-          Light rain from 11:12 PM to 12:00 AM
-        </div>
-      </div>
-
-      <!-- ─── Hourly Forecast ─── -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <i data-lucide="clock"></i>
-            <span>Hourly forecast</span>
-          </div>
-          <div class="card-header-right">
-            <i data-lucide="chevron-left"></i>
-            <i data-lucide="chevron-right"></i>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="hourly-scroll">
-            <div class="hourly-col">
-              <span class="h-temp">72°</span>
-              <i data-lucide="cloud-sun"></i>
-              <span class="h-rain">--%</span>
-              <span class="h-time">Now</span>
-            </div>
-            <div class="hourly-col">
-              <span class="h-temp">74°</span>
-              <i data-lucide="cloud-sun"></i>
-              <span class="h-rain">--%</span>
-              <span class="h-time">2 PM</span>
-            </div>
-            <div class="hourly-col">
-              <span class="h-temp">75°</span>
-              <i data-lucide="cloud"></i>
-              <span class="h-rain">--%</span>
-              <span class="h-time">3 PM</span>
-            </div>
-            <div class="hourly-col">
-              <span class="h-temp">74°</span>
-              <i data-lucide="cloud"></i>
-              <span class="h-rain">--%</span>
-              <span class="h-time">4 PM</span>
-            </div>
-            <div class="hourly-col">
-              <span class="h-temp">73°</span>
-              <i data-lucide="cloud-rain"></i>
-              <span class="h-rain">40%</span>
-              <span class="h-time">5 PM</span>
-            </div>
-            <div class="hourly-col">
-              <span class="h-temp">70°</span>
-              <i data-lucide="cloud-rain"></i>
-              <span class="h-rain">60%</span>
-              <span class="h-time">6 PM</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ─── 10-Day Forecast ─── -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <i data-lucide="calendar"></i>
-            <span>10-day forecast</span>
-          </div>
-          <div class="card-header-right">
-            <i data-lucide="chevron-left"></i>
-            <i data-lucide="chevron-right"></i>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="ten-day-scroll">
-            <div class="ten-day-pill">
-              <span class="pill-hilo">89°/72°</span>
-              <i data-lucide="cloud-sun"></i>
-              <span class="pill-precip">15%</span>
-              <span class="pill-day">Today</span>
-              <span class="pill-date">5/13</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">82°/68°</span>
-              <i data-lucide="cloud-sun"></i>
-              <span class="pill-precip">10%</span>
-              <span class="pill-day">Thu</span>
-              <span class="pill-date">5/14</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">78°/65°</span>
-              <i data-lucide="cloud-rain"></i>
-              <span class="pill-precip">45%</span>
-              <span class="pill-day">Fri</span>
-              <span class="pill-date">5/15</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">75°/62°</span>
-              <i data-lucide="cloud-rain"></i>
-              <span class="pill-precip">60%</span>
-              <span class="pill-day">Sat</span>
-              <span class="pill-date">5/16</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">80°/66°</span>
-              <i data-lucide="sun"></i>
-              <span class="pill-precip">5%</span>
-              <span class="pill-day">Sun</span>
-              <span class="pill-date">5/17</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">83°/70°</span>
-              <i data-lucide="sun"></i>
-              <span class="pill-precip">0%</span>
-              <span class="pill-day">Mon</span>
-              <span class="pill-date">5/18</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">81°/67°</span>
-              <i data-lucide="cloud-sun"></i>
-              <span class="pill-precip">20%</span>
-              <span class="pill-day">Tue</span>
-              <span class="pill-date">5/19</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">79°/64°</span>
-              <i data-lucide="cloud-rain"></i>
-              <span class="pill-precip">55%</span>
-              <span class="pill-day">Wed</span>
-              <span class="pill-date">5/20</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">76°/61°</span>
-              <i data-lucide="cloud-rain"></i>
-              <span class="pill-precip">70%</span>
-              <span class="pill-day">Thu</span>
-              <span class="pill-date">5/21</span>
-            </div>
-            <div class="ten-day-pill">
-              <span class="pill-hilo">84°/71°</span>
-              <i data-lucide="cloud-sun"></i>
-              <span class="pill-precip">15%</span>
-              <span class="pill-day">Fri</span>
-              <span class="pill-date">5/22</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ─── Weather Map ─── -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <i data-lucide="map-pin"></i>
-            <span>Weather map</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="map-placeholder">New York / Newark</div>
-        </div>
-      </div>
-
-      <!-- ─── Precipitation ─── -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <i data-lucide="cloud-rain"></i>
-            <span>Precipitation</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="precip-value">&lt;0.05 in</div>
-          <div class="precip-subtitle">Total rain for the day</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ─── Wind Widget (Triangle) ─── -->
-    <div class="wind-widget">
-      <svg class="wind-bg" viewBox="0 0 400 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="200,20 390,225 10,225"
-                 fill="rgba(255,255,255,0.07)"
-                 stroke="rgba(255,255,255,0.10)"
-                 stroke-width="28"
-                 stroke-linejoin="round"/>
-      </svg>
-      <div class="wind-content">
-        <div class="wind-header">
-          <i data-lucide="wind"></i>
-          <span>Wind</span>
-        </div>
-        <div class="wind-speed">13 mph</div>
-        <div class="wind-dir">From S</div>
-      </div>
-    </div>
-
+    <div id="result"></div>
   </div>
 
   <button id="install-btn" hidden aria-label="Install app"></button>
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
-    lucide.createIcons();
+(async function () {
+  const resultEl = document.getElementById('result');
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+  const iconMap = {
+    0:'sun', 1:'cloud-sun', 2:'cloud-sun', 3:'cloud',
+    45:'cloud-fog', 48:'cloud-fog',
+    51:'cloud-rain', 53:'cloud-rain', 55:'cloud-rain',
+    56:'cloud-rain', 57:'cloud-rain',
+    61:'cloud-rain', 63:'cloud-rain', 65:'cloud-rain',
+    66:'cloud-rain', 67:'cloud-rain',
+    71:'cloud-snow', 73:'cloud-snow', 75:'cloud-snow', 77:'cloud-snow',
+    80:'cloud-rain', 81:'cloud-rain', 82:'cloud-rain',
+    85:'cloud-snow', 86:'cloud-snow',
+    95:'cloud-lightning', 96:'cloud-lightning', 99:'cloud-lightning'
+  };
+
+  function weatherDescription(code) {
+    if (code <= 1) return 'mostly clear';
+    if (code === 2) return 'partly cloudy';
+    if (code === 3) return 'overcast';
+    if (code === 45 || code === 48) return 'foggy';
+    if (code >= 51 && code <= 55) return 'drizzly';
+    if (code >= 56 && code <= 57) return 'freezing drizzly';
+    if (code >= 61 && code <= 65) return 'rainy';
+    if (code >= 66 && code <= 67) return 'freezing rainy';
+    if (code >= 71 && code <= 77) return 'snowy';
+    if (code >= 80 && code <= 82) return 'showery';
+    if (code >= 85 && code <= 86) return 'snow showery';
+    if (code >= 95) return 'stormy';
+    return 'cloudy';
+  }
+
+  function windDir(deg) {
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+    return dirs[Math.round(deg / 22.5) % 16];
+  }
+
+  function fmtHourFromStr(isoStr, idx) {
+    if (idx === 0) return 'Now';
+    const h = parseInt(isoStr.split('T')[1]);
+    if (h === 0) return '12 AM';
+    if (h === 12) return '12 PM';
+    return h < 12 ? `${h} AM` : `${h - 12} PM`;
+  }
+
+  function parseLocalDate(dateStr) {
+    const p = dateStr.split('-');
+    return new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+  }
+
+  function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  const weatherGradients = {
+    sunny: 'linear-gradient(180deg, #f12711 0%, #f5af19 50%, #2980b9 100%)',
+    cloudy: 'linear-gradient(180deg, #bdc3c7 0%, #95a5a6 50%, #7f8c8d 100%)',
+    rainy: 'linear-gradient(180deg, #2c3e50 0%, #4ca1af 50%, #5c6bc0 100%)',
+    snowy: 'linear-gradient(180deg, #4a6fa5 0%, #7eb8da 50%, #b8c6db 100%)',
+    stormy: 'linear-gradient(180deg, #0d1117 0%, #161b22 40%, #0f1923 100%)'
+  };
+  function codeToCondition(code) {
+    if (code <= 1) return 'sunny';
+    if (code <= 3 || code === 45 || code === 48) return 'cloudy';
+    if ((code >= 51 && code <= 57) || (code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return 'rainy';
+    if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snowy';
+    if (code >= 95) return 'stormy';
+    return 'cloudy';
+  }
+
+  function generateInsight(daily, feelsLike, todayHigh) {
+    const labels = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const desc = weatherDescription(daily.weathercode[0]);
+    let t = '';
+    if (feelsLike != null && Math.abs(feelsLike - todayHigh) > 3) {
+      t = `Expect ${desc} conditions today. The air feels like ${feelsLike}° — ${feelsLike > todayHigh ? 'warmer' : 'cooler'} than the actual ${todayHigh}° high.`;
+    } else {
+      t = `Expect ${desc} conditions today with a high of ${todayHigh}°.`;
+    }
+    const codes = daily.weathercode;
+    const hasRain = codes.slice(1).some(c =>
+      (c >= 51 && c <= 57) || (c >= 61 && c <= 67) || (c >= 80 && c <= 82)
+    );
+    const hasSnow = codes.slice(1).some(c => (c >= 71 && c <= 77) || (c >= 85 && c <= 86));
+    const hasStorm = codes.slice(1).some(c => c >= 95);
+    if (hasRain || hasSnow || hasStorm) {
+      const first = codes.slice(1).findIndex(c =>
+        (c >= 51 && c <= 57) || (c >= 61 && c <= 67) || (c >= 80 && c <= 82) ||
+        (c >= 71 && c <= 77) || (c >= 85 && c <= 86) || c >= 95
+      );
+      const day = labels[(new Date().getDay() + 1 + first) % 7];
+      if (hasRain) t += ` Rain moves in by ${day}.`;
+      else if (hasSnow) t += ` Snow arrives by ${day}.`;
+      else t += ` Storms expected by ${day}.`;
+    } else {
+      const clear = codes.slice(1).every(c => c <= 2);
+      if (clear) t += ' The rest of the week looks clear.';
+      else if (codes.slice(1).every(c => c <= 3 || c === 45 || c === 48))
+        t += ' The rest of the week stays mostly cloudy.';
+      else t += ' The rest of the week should remain quiet.';
+    }
+    return t;
+  }
+
+  function findRainWindow(hourlyPrecip, hourlyTimes) {
+    for (let i = 0; i < hourlyPrecip.length; i++) {
+      if (hourlyPrecip[i] > 0) {
+        const start = hourlyTimes[i];
+        let endIdx = i;
+        while (endIdx < hourlyPrecip.length && hourlyPrecip[endIdx] > 0) endIdx++;
+        const end = endIdx < hourlyTimes.length ? hourlyTimes[endIdx] : hourlyTimes[hourlyTimes.length - 1];
+        const fmt = t => {
+          const h = parseInt(t.split('T')[1]);
+          const ampm = h < 12 ? 'AM' : 'PM';
+          const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+          return `${h12}:${String(t.split('T')[1].split(':')[1]).padStart(2,'0')} ${ampm}`;
+        };
+        return `Light rain from ${fmt(start)} to ${fmt(end)}`;
+      }
+    }
+    return 'No precipitation expected today.';
+  }
+
+  async function resolveCoordinates(query) {
+    const q = query.trim();
+    if (/^\d{5}$/.test(q)) {
+      try {
+        const r = await fetch(`https://api.zippopotam.us/us/${q}`);
+        if (r.ok) {
+          const d = await r.json();
+          const p = d.places[0];
+          return { latitude: parseFloat(p.latitude), longitude: parseFloat(p.longitude), name: `${p['place name']}, ${p.state}` };
+        }
+      } catch (_) {}
+    }
+    try {
+      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1`);
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      if (!d.results || !d.results.length) throw new Error('No matching locations');
+      const { latitude, longitude, name, country } = d.results[0];
+      return { latitude, longitude, name: `${name}, ${country}` };
+    } catch (e) {
+      throw new Error(`Unable to locate "${q}".`);
+    }
+  }
+
+  async function reverseGeocode(lat, lon) {
+    try {
+      const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+      if (!r.ok) throw Error();
+      const d = await r.json();
+      return d.city || d.locality || d.principalSubdivision || 'Current Location';
+    } catch { return 'Current Location'; }
+  }
+
+  async function renderForecast(latitude, longitude, name) {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+        `&current=temperature_2m,weathercode,apparent_temperature,wind_speed_10m,wind_direction_10m` +
+        `&hourly=temperature_2m,weathercode,precipitation_probability,precipitation` +
+        `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,precipitation_probability_max` +
+        `&forecast_days=10&timezone=auto&temperature_unit=fahrenheit`
+    );
+    if (!res.ok) throw new Error('Weather service error');
+    const f = await res.json();
+
+    const current = f.current || {};
+    const daily = f.daily;
+    const hourly = f.hourly;
+
+    const todayCode = current.weathercode ?? daily.weathercode[0];
+    document.body.style.background = weatherGradients[codeToCondition(todayCode)];
+
+    const shortDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    const currentTemp = current.temperature_2m != null ? Math.round(current.temperature_2m) : Math.round(daily.temperature_2m_max[0]);
+    const feelsLike = current.apparent_temperature != null ? Math.round(current.apparent_temperature) : null;
+    const todayHigh = Math.round(daily.temperature_2m_max[0]);
+    const todayLow = Math.round(daily.temperature_2m_min[0]);
+    const condText = capitalize(weatherDescription(todayCode));
+    const heroIcon = iconMap[todayCode] ?? 'cloud';
+
+    const windSpd = current.wind_speed_10m != null ? Math.round(current.wind_speed_10m) : null;
+    const windDeg = current.wind_direction_10m;
+    const windCardinal = windDeg != null ? windDir(windDeg) : null;
+
+    // Insight
+    const insight = generateInsight(daily, feelsLike, todayHigh);
+
+    // Hourly
+    const now = new Date();
+    const currentHour = now.getHours();
+    const hEnd = Math.min(currentHour + 6, hourly.time.length);
+    const hTimes = hourly.time.slice(currentHour, hEnd);
+    const hTemps = hourly.temperature_2m.slice(currentHour, hEnd);
+    const hCodes = hourly.weathercode.slice(currentHour, hEnd);
+    const hRain = hourly.precipitation_probability.slice(currentHour, hEnd);
+
+    // Rain window
+    const rainInsight = findRainWindow(hourly.precipitation, hourly.time);
+
+    // Daily precip total
+    const dailyPrecip = daily.precipitation_sum[0];
+    const precipDisplay = dailyPrecip != null && dailyPrecip > 0
+      ? (dailyPrecip < 0.05 ? '<0.05 in' : dailyPrecip.toFixed(2) + ' in')
+      : '0.00 in';
+
+    let html = `
+      <div class="hero">
+        <div class="hero-icon"><i data-lucide="${heroIcon}"></i></div>
+        <div class="hero-condition">${condText}</div>
+        <div class="hero-temp">${currentTemp}°</div>
+        <div class="hero-extras">
+          <div>Feels like ${feelsLike != null ? feelsLike + '°' : '--'}</div>
+          <div>High ${todayHigh}° · Low ${todayLow}°</div>
+        </div>
+      </div>
+      <div class="cards">
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <i data-lucide="sparkles"></i>
+              <span>AI Weather Report</span>
+            </div>
+            <i data-lucide="chevron-down"></i>
+          </div>
+          <div class="card-body">${insight}</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <i data-lucide="trending-up"></i>
+              <span>Weather insight</span>
+            </div>
+          </div>
+          <div class="card-body insight-text">${rainInsight}</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <i data-lucide="clock"></i>
+              <span>Hourly forecast</span>
+            </div>
+            <div class="card-header-right">
+              <i data-lucide="chevron-left"></i>
+              <i data-lucide="chevron-right"></i>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="hourly-scroll">`;
+
+    for (let i = 0; i < hTimes.length; i++) {
+      const hi = iconMap[hCodes[i]] ?? 'cloud';
+      const ht = Math.round(hTemps[i]);
+      const hp = hRain[i] != null ? Math.round(hRain[i]) + '%' : '--%';
+      html += `
+              <div class="hourly-col">
+                <span class="h-temp">${ht}°</span>
+                <i data-lucide="${hi}" class="h-icon"></i>
+                <span class="h-rain">${hp}</span>
+                <span class="h-time">${fmtHourFromStr(hTimes[i], i)}</span>
+              </div>`;
     }
 
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('install-btn');
-      btn.hidden = false;
-      btn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        btn.hidden = true;
-      });
-    });
+    html += `
+            </div>
+          </div>
+        </div>
 
-    window.addEventListener('appinstalled', () => {
-      const btn = document.getElementById('install-btn');
-      if (btn) btn.hidden = true;
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <i data-lucide="calendar"></i>
+              <span>10-day forecast</span>
+            </div>
+            <div class="card-header-right">
+              <i data-lucide="chevron-left"></i>
+              <i data-lucide="chevron-right"></i>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="ten-day-scroll">`;
+
+    const today = new Date();
+    for (let i = 0; i < daily.time.length; i++) {
+      const d = parseLocalDate(daily.time[i]);
+      const dayName = i === 0 ? 'Today' : shortDays[d.getDay()];
+      const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
+      const icon = iconMap[daily.weathercode[i]] ?? 'cloud';
+      const pp = daily.precipitation_probability_max[i];
+      const ppDisp = pp != null ? Math.round(pp) + '%' : '--%';
+      const hi = Math.round(daily.temperature_2m_max[i]);
+      const lo = Math.round(daily.temperature_2m_min[i]);
+      html += `
+              <div class="ten-day-pill">
+                <span class="pill-hilo">${hi}°/${lo}°</span>
+                <i data-lucide="${icon}"></i>
+                <span class="pill-precip">${ppDisp}</span>
+                <span class="pill-day">${dayName}</span>
+                <span class="pill-date">${dateStr}</span>
+              </div>`;
+    }
+
+    html += `
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <i data-lucide="map-pin"></i>
+              <span>Weather map</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="map-placeholder">${name.replace('📍 ','')}</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <i data-lucide="cloud-rain"></i>
+              <span>Precipitation</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="precip-value">${precipDisplay}</div>
+            <div class="precip-subtitle">Total rain for the day</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="wind-widget">
+        <svg class="wind-bg" viewBox="0 0 400 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="200,20 390,225 10,225"
+                   fill="rgba(255,255,255,0.07)"
+                   stroke="rgba(255,255,255,0.10)"
+                   stroke-width="28"
+                   stroke-linejoin="round"/>
+        </svg>
+        <div class="wind-content">
+          <div class="wind-header">
+            <i data-lucide="wind"></i>
+            <span>Wind</span>
+          </div>
+          <div class="wind-speed">${windSpd != null ? windSpd + ' mph' : '--'}</div>
+          <div class="wind-dir">${windCardinal ? 'From ' + windCardinal : ''}</div>
+        </div>
+      </div>`;
+
+    resultEl.innerHTML = html;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  async function getWeather(query) {
+    resultEl.innerHTML = '<div class="loading-text">Loading…</div>';
+    const { latitude, longitude, name } = await resolveCoordinates(query);
+    await renderForecast(latitude, longitude, name);
+  }
+
+  async function getWeatherByCoords(latitude, longitude) {
+    resultEl.innerHTML = '<div class="loading-text">Loading…</div>';
+    const input = document.getElementById('city-input');
+    const locationName = await reverseGeocode(latitude, longitude);
+    input.value = '';
+    input.placeholder = `📍 ${locationName}`;
+    await renderForecast(latitude, longitude, `📍 ${locationName}`);
+  }
+
+  const navSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
+  const checkSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  async function detectLocation() {
+    if (!navigator.geolocation) return;
+    const btn = document.getElementById('geo-btn');
+    btn.classList.add('loading');
+    btn.classList.remove('success');
+    try {
+      const pos = await new Promise((res, rej) =>
+        navigator.geolocation.getCurrentPosition(res, rej, { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 })
+      );
+      await getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+      btn.classList.remove('loading');
+      btn.classList.add('success');
+      btn.innerHTML = checkSvg;
+      setTimeout(() => {
+        btn.classList.remove('success');
+        btn.innerHTML = navSvg;
+      }, 1200);
+    } catch (_) {
+      btn.classList.remove('loading');
+    }
+  }
+
+  document.getElementById('get-weather-btn').addEventListener('click', async () => {
+    const q = document.getElementById('city-input').value.trim();
+    if (!q) return;
+    resultEl.innerHTML = '<div class="loading-text">Loading…</div>';
+    try { await getWeather(q); }
+    catch (e) { resultEl.innerHTML = `<div style="text-align:center;opacity:0.6;padding:2rem 0;">${e.message}</div>`; }
+  });
+
+  document.getElementById('city-input').addEventListener('keypress', e => {
+    if (e.key === 'Enter') document.getElementById('get-weather-btn').click();
+  });
+
+  document.getElementById('city-input').addEventListener('focus', () => {
+    document.getElementById('city-input').placeholder = 'City or ZIP code…';
+  });
+
+  document.getElementById('geo-btn').addEventListener('click', detectLocation);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('install-btn');
+    btn.hidden = false;
+    btn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      btn.hidden = true;
     });
+  });
+
+  window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('install-btn');
+    if (btn) btn.hidden = true;
+  });
+
+  if (!sessionStorage.getItem('geo-done')) {
+    sessionStorage.setItem('geo-done', '1');
+    detectLocation();
+  }
+})();
   </script>
 </body>
 </html>
