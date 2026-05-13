@@ -37,21 +37,30 @@
     }
     .top-row {
       display: flex;
-      align-items: center;
-      margin-bottom: 1.25rem;
-      position: relative;
+      align-items: flex-start;
       justify-content: space-between;
+      margin-bottom: 0.75rem;
     }
     .top-row .logo {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);
+      font-size: clamp(1.5rem, 1.1rem + 2vw, 2.5rem);
       line-height: 1;
+      padding-top: 0.2rem;
+    }
+    .top-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      align-items: stretch;
+    }
+    .install-icon-btn,
+    .geo-btn,
+    #get-weather-btn {
+      min-width: 130px;
     }
     .install-icon-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.3rem;
       padding: 0 1.2rem;
       height: 40px;
@@ -78,7 +87,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       height: 40px;
       padding: 0 0.65rem;
       border: 1px solid rgba(255,255,255,0.2);
@@ -177,7 +185,7 @@
       opacity: 0.7;
       display: flex;
       justify-content: center;
-      gap: 1.25rem;
+      gap: 2.5rem;
     }
     .hero-hilo span { display: flex; align-items: center; gap: 0.2rem; }
     .insight {
@@ -248,7 +256,7 @@
       font-weight: 600;
       opacity: 0.8;
       text-align: center;
-      line-height: 1.35;
+      line-height: 1.5;
     }
     .loading-text {
       text-align: center;
@@ -261,22 +269,13 @@
       .top-row { margin-bottom: 0.85rem; }
       .top-row .logo { font-size: 1.6rem; }
       .input-group { gap: 0.35rem; }
-      #get-weather-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; min-width: 76px; }
+      #get-weather-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
       input[type=text] { height: 44px; padding: 0 0.7rem; min-width: 0; }
       .geo-btn { height: 44px; padding: 0 0.5rem; font-size: 0.72rem; }
-      .hero {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-height: 33vh;
-        padding: 0.75rem 0 1rem;
-      }
-      .hero-icon svg, .hero-icon i { width: 48px; height: 48px; }
-      .insight { font-size: 0.78rem; padding: 0.65rem 0.85rem; }
-      .forecast-row { gap: 0.4rem; padding: 0.15rem 0 0.5rem; }
-      .mini-card { padding: 0.7rem 0.35rem 0.75rem; }
-      .mini-card .icon { width: 24px; height: 24px; }
       .install-icon-btn { height: 44px; padding: 0 0.7rem; font-size: 0.85rem; }
+      .install-icon-btn,
+      .geo-btn,
+      #get-weather-btn { min-width: 110px; }
     }
 
     @media (min-width: 768px) {
@@ -287,11 +286,13 @@
 <body>
   <div class="glass">
     <div class="top-row">
-      <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">Use my location</button>
       <div class="logo">⛅ Weather</div>
-      <button id="install-btn" class="install-icon-btn" hidden title="Install app">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg> Install
-      </button>
+      <div class="top-actions">
+        <button id="install-btn" class="install-icon-btn" hidden title="Install app">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg> Install
+        </button>
+        <button id="geo-btn" class="geo-btn" title="Use my current location" aria-label="Use my current location">Use my location</button>
+      </div>
     </div>
     <div class="input-group">
     <input type="text" id="city-input" placeholder="City name or ZIP code…">
@@ -501,13 +502,24 @@
     await renderForecast(latitude, longitude, name);
   }
 
+  // Reverse geocode coordinates to city name
+  async function reverseGeocode(lat, lon) {
+    try {
+      const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+      if (!r.ok) throw Error();
+      const d = await r.json();
+      return d.city || d.locality || d.principalSubdivision || 'Current Location';
+    } catch { return 'Current Location'; }
+  }
+
   // Get weather by direct coordinates (geolocation path)
   async function getWeatherByCoords(latitude, longitude) {
     resultEl.innerHTML = '<div class="loading-text">⏳ Loading…</div>';
     const input = document.getElementById('city-input');
+    const locationName = await reverseGeocode(latitude, longitude);
     input.value = '';
-    input.placeholder = '📍 Current location';
-    await renderForecast(latitude, longitude, '📍 Current Location');
+    input.placeholder = `📍 ${locationName}`;
+    await renderForecast(latitude, longitude, `📍 ${locationName}`);
   }
 
   // Geolocation detection
